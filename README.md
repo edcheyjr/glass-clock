@@ -1,5 +1,7 @@
 # Glass Clock App inspired by [Filip Zrnzevic](https://codepen.io/filipz)
 
+![preview](/image/preview.png)
+
 You can run the app as a wallpaper on your machine
 
 ## TODO
