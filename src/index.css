@@ -1,0 +1,692 @@
+/* Custom CSS properties for light angle animations */
+@property --primary-light-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: -75deg;
+}
+
+@property --dark-edge-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 105deg;
+}
+
+:root {
+    --minute-marker-opacity: 1;
+    --inner-shadow-opacity: 1;
+    --outer-shadow-opacity: 1;
+    --reflection-opacity: 0.5;
+    --glossy-opacity: 0.3;
+    --hour-number-opacity: 1;
+    --hour-number-color: rgba(50, 50, 50, 0.9);
+    --minute-marker-color: rgba(80, 80, 80, 0.5);
+    --hand-color: rgba(50, 50, 50, 0.9);
+    --second-hand-color: rgba(255, 107, 0, 1);
+    --shadow-layer1-opacity: 0.1;
+    --shadow-layer2-opacity: 0.1;
+    --shadow-layer3-opacity: 0.1;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: rgba(215, 215, 215, 1);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+}
+
+.inspiration {
+    position: fixed;
+    top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(50, 50, 50, 0.8);
+    z-index: 100;
+}
+
+.inspiration a {
+    color: rgba(50, 50, 50, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.inspiration a:hover {
+    color: rgba(0, 0, 0, 0.9);
+    text-decoration: underline;
+}
+
+.glass-clock-container {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    margin-top: 20px;
+}
+
+/* Glass effect wrapper */
+.glass-effect-wrapper {
+    position: relative;
+    z-index: 2;
+    border-radius: 50%;
+    background: transparent;
+    pointer-events: none;
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+/* Shadow container - OUTER SHADOW */
+.glass-effect-shadow {
+    --shadow-offset: 3em;
+    position: absolute;
+    width: calc(100% + var(--shadow-offset));
+    height: calc(100% + var(--shadow-offset));
+    top: calc(0% - var(--shadow-offset) / 2);
+    left: calc(0% - var(--shadow-offset) / 2);
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+    pointer-events: none;
+    z-index: 1;
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+    opacity: 1;
+}
+
+/* Shadow effect - softened with multiple layers */
+.glass-effect-shadow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+    width: calc(100% - var(--shadow-offset) - 0.25em);
+    height: calc(100% - var(--shadow-offset) - 0.25em);
+    top: calc(var(--shadow-offset) - 0.5em);
+    left: calc(var(--shadow-offset) - 0.875em);
+    padding: 0.125em;
+    box-sizing: border-box;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    overflow: visible;
+    opacity: 0.8;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 15px 25px rgba(0, 0, 0, 0.05),
+        0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.glass-clock-face {
+    --border-width: clamp(2px, 0.0625em, 4px);
+    position: relative;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.03);
+    background-image: linear-gradient(
+        -75deg,
+        rgba(255, 255, 255, 0.01),
+        rgba(255, 255, 255, 0.04),
+        rgba(255, 255, 255, 0.01)
+    );
+    /* Blur effect moved directly to the clock face */
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    box-shadow: inset 0 0.4em 0.4em rgba(0, 0, 0, 0.1),
+        inset 0 -0.4em 0.4em rgba(255, 255, 255, 0.5),
+        10px 5px 10px rgba(0, 0, 0, var(--shadow-layer1-opacity)),
+        10px 20px 20px rgba(0, 0, 0, var(--shadow-layer2-opacity)),
+        10px 55px 50px rgba(0, 0, 0, var(--shadow-layer3-opacity));
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, box-shadow;
+}
+
+/* Enhanced clock border effect with improved glossy edges based on the provided CSS */
+.glass-clock-face::after {
+    content: '';
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    border-radius: 50%;
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background: conic-gradient(
+            from var(--primary-light-angle) at 50% 50%,
+            rgba(255, 255, 255, 1),
+            rgba(255, 255, 255, 0.2) 5% 40%,
+            rgba(255, 255, 255, 1) 50%,
+            rgba(255, 255, 255, 0.2) 60% 95%,
+            rgba(255, 255, 255, 1)
+        ),
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.9),
+            rgba(255, 255, 255, 0.5)
+        );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2)
+            rgba(255, 255, 255, 0.9),
+        0 0 12px rgba(255, 255, 255, 0.8);
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1),
+        --primary-light-angle 500ms ease;
+    opacity: 0.9;
+    will-change: background, box-shadow;
+}
+
+/* Edge highlight ring */
+.glass-edge-highlight {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Enhanced edge highlight ring with increased glossiness */
+.glass-edge-highlight-outer {
+    position: absolute;
+    width: 356px;
+    height: 356px;
+    border-radius: 50%;
+    top: -3px;
+    left: -3px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    z-index: 7;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Dark edge shadow for bottom-right contrast - INNER SHADOW */
+.glass-edge-shadow {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    box-shadow: inset -5px 5px 15px rgba(0, 0, 0, 0.3),
+        inset -8px 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 7;
+    pointer-events: none;
+    opacity: var(--inner-shadow-opacity);
+}
+
+/* Dark edge effect for enhanced glossiness - INNER SHADOW */
+.glass-dark-edge {
+    position: absolute;
+    z-index: 9;
+    inset: 0;
+    border-radius: 50%;
+    width: calc(100% + var(--border-width));
+    height: calc(100% + var(--border-width));
+    top: calc(0% - var(--border-width) / 2);
+    left: calc(0% - var(--border-width) / 2);
+    padding: var(--border-width);
+    box-sizing: border-box;
+    background: conic-gradient(
+        from var(--dark-edge-angle) at 50% 50%,
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0) 5% 40%,
+        rgba(0, 0, 0, 0.5) 50%,
+        rgba(0, 0, 0, 0) 60% 95%,
+        rgba(0, 0, 0, 0.5)
+    );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1),
+        --dark-edge-angle 500ms ease;
+    box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(0, 0, 0, 0.2);
+    opacity: var(--inner-shadow-opacity);
+    will-change: background;
+}
+
+/* Prominent glossy overlay - covers the entire clock face */
+.glass-glossy-overlay {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0.7) 15%,
+        rgba(255, 255, 255, 0.5) 25%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0.2) 75%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    pointer-events: none;
+    z-index: 6;
+    /* Below the clock elements but above the base */
+    mix-blend-mode: overlay;
+    opacity: var(--glossy-opacity);
+    filter: blur(10px);
+}
+
+/* Glass reflection overlay - new element */
+.glass-reflection-overlay {
+    position: absolute;
+    width: 330px;
+    height: 330px;
+    border-radius: 50%;
+    top: 10px;
+    left: 10px;
+    background: radial-gradient(
+        ellipse at 30% 30%,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.3) 30%,
+        rgba(255, 255, 255, 0.1) 60%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 15;
+    mix-blend-mode: overlay;
+    opacity: 0.7;
+    transform: rotate(-15deg);
+    filter: blur(10px);
+}
+
+/* Light reflection effect with enhanced glossiness */
+.glass-reflection {
+    position: absolute;
+    width: 350px;
+    height: 175px;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.4) 40%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 175px 175px 0 0;
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: soft-light;
+    opacity: var(--reflection-opacity);
+    filter: blur(10px);
+}
+
+/* Hover effects - only for shadow */
+.glass-effect-wrapper:hover .glass-effect-shadow {
+    /* Remove the dramatic shadow size change on hover */
+    opacity: 0.9;
+}
+
+.glass-effect-wrapper:hover .glass-effect-shadow::after {
+    opacity: 0.85;
+}
+
+/* Remove the hover effect for the glass reflection overlay */
+.glass-effect-wrapper:hover .glass-reflection-overlay {
+    opacity: 0.8;
+}
+
+/* Modified to use scale3d for sharper scaling */
+.glass-effect-wrapper:active {
+    transform: scale3d(0.97, 0.97, 1);
+}
+
+.glass-effect-wrapper:active .glass-clock-face {
+    box-shadow: inset 0 0.4em 0.4em rgba(0, 0, 0, 0.1),
+        inset 0 -0.4em 0.4em rgba(255, 255, 255, 0.4),
+        0 5px 20px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.1),
+        0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.glass-effect-wrapper:active .glass-clock-face::after {
+    --primary-light-angle: -75deg;
+}
+
+.glass-effect-wrapper:active .glass-effect-shadow {
+    filter: blur(clamp(25px, 1.25em, 50px));
+    -webkit-filter: blur(clamp(25px, 1.25em, 50px));
+    width: calc(115% + var(--shadow-offset));
+    height: calc(115% + var(--shadow-offset));
+}
+
+.glass-effect-wrapper:active .glass-effect-shadow::after {
+    opacity: 0.9;
+    top: calc(var(--shadow-offset) - 0.7em);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+}
+
+/* Inner blur circle */
+.clock-center-blur {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    top: 157px;
+    left: 157px;
+    background-color: rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 16;
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4),
+        inset 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.clock-hour-marks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 14;
+}
+
+/* Minute marker as lines */
+.minute-marker {
+    position: absolute;
+    width: 1px;
+    height: 10px;
+    background-color: var(--minute-marker-color);
+    top: 10px;
+    /* Moved closer to edge */
+    left: 175px;
+    transform-origin: center 165px;
+    /* Adjusted for edge position */
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+    opacity: var(--minute-marker-opacity);
+}
+
+.clock-number {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--hour-number-color);
+    text-align: center;
+    width: 30px;
+    height: 20px;
+    line-height: 20px;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    z-index: 15;
+    opacity: var(--hour-number-opacity);
+    transition: opacity 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.clock-logo {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    top: 110px;
+    left: 135px;
+    z-index: 15;
+    opacity: 0.9;
+}
+
+.clock-logo img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.clock-date {
+    position: absolute;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(50, 50, 50, 0.8);
+    text-align: center;
+    width: 140px;
+    height: auto;
+    line-height: 1;
+    bottom: 115px;
+    left: 105px;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    z-index: 15;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.clock-timezone {
+    position: absolute;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(50, 50, 50, 0.8);
+    text-align: center;
+    width: 140px;
+    height: auto;
+    line-height: 1;
+    bottom: 100px;
+    left: 105px;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    z-index: 15;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+.clock-hand {
+    position: absolute;
+    transform-origin: center bottom;
+    bottom: 175px;
+    left: 175px;
+    z-index: 15;
+    will-change: transform;
+}
+
+.hour-hand {
+    width: 6px;
+    height: 70px;
+    background-color: var(--hand-color);
+    margin-left: -3px;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.minute-hand {
+    width: 4px;
+    height: 100px;
+    background-color: var(--hand-color);
+    margin-left: -2px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Clock center dot */
+.clock-center-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--second-hand-color);
+    border-radius: 50%;
+    top: 169px;
+    left: 169px;
+    z-index: 17;
+    box-shadow: 0 0 8px rgba(255, 107, 0, 0.4);
+}
+
+/* Second hand container */
+.second-hand-container {
+    position: absolute;
+    width: 2px;
+    height: 120px;
+    top: 55px;
+    /* Position it to extend from the center upward */
+    left: 174px;
+    /* Center it horizontally (175px - 1px for width/2) */
+    transform-origin: 1px 120px;
+    /* Set rotation origin to the bottom of the hand */
+    z-index: 17;
+    will-change: transform;
+}
+
+/* Second hand */
+.second-hand {
+    position: absolute;
+    width: 2px;
+    height: 120px;
+    background-color: var(--second-hand-color);
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 0 5px rgba(255, 107, 0, 0.5);
+}
+
+/* Second hand counterweight */
+.second-hand-counterweight {
+    position: absolute;
+    width: 6px;
+    height: 14px;
+    background-color: var(--second-hand-color);
+    bottom: -14px;
+    /* Position it below the rotation point */
+    left: -2px;
+    border-radius: 0 0 4px 4px;
+    /* Rounded at the bottom */
+    box-shadow: 0 0 5px rgba(255, 107, 0, 0.5);
+}
+
+/* Second hand shadow */
+.second-hand-shadow {
+    position: absolute;
+    width: 2px;
+    height: 120px;
+    top: 55px;
+    /* Match container position */
+    left: 174px;
+    /* Match container position */
+    transform-origin: 1px 120px;
+    /* Match container transform origin */
+    z-index: 14;
+    filter: blur(2px);
+    opacity: 0.3;
+    will-change: transform;
+}
+
+/* Second hand shadow line */
+.second-hand-shadow::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 120px;
+    background: transparent;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Second hand shadow counterweight */
+.second-hand-shadow::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 16px;
+    background: transparent;
+    bottom: -16px;
+    /* Match counterweight position */
+    left: -3px;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.15);
+}
+
+.attribution {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: rgba(50, 50, 50, 0.7);
+    text-align: center;
+    z-index: 100;
+}
+
+.attribution a {
+    color: rgba(50, 50, 50, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.attribution a:hover {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.keyboard-info {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: rgba(50, 50, 50, 0.7);
+    text-align: center;
+    z-index: 100;
+}
+
+.keyboard-info kbd {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-family: monospace;
+}
+
+.tweakpane-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    display: none;
+    /* Hidden by default */
+}
+.timezone-container {
+    position: fixed;
+    top: 20px;
+    right: 320px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    display: none;
+    /* Hidden by default */
+}
+/* Make pane items more compact */
+#timezone-pane-container .tp-lblv_v {
+    padding: 4px 8px;
+}
