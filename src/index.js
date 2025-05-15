@@ -792,7 +792,7 @@ function updateTimezoneDisplay(cityName) {
  */
 function handleTimezoneChange(newTimezone) {
     currentTimezone = newTimezone
-    const cityName = getTimezonesWithDisplayNames()[newTimezone]
+    const cityName = newTimezone.split('/').pop().replace(/_/g, ' ')
     updateHourAndMinuteHands()
     updateTimezoneDisplay(cityName)
 }
@@ -804,6 +804,12 @@ function handleTimezoneChange(newTimezone) {
  * @description Updates both parameters and UI elements
  */
 function resetTimezoneSettings(tzParams) {
+    autoDetectTimezone = true
+    tzParams.autoDetect = true
+    const detectedTz = detectSystemTimezone()
+    handleTimezoneChange(detectedTz)
+    tzParams.timezone = detectedTz
+    // reset timezone
     const defaultTz = 'Africa/Nairobi'
     tzParams.timezone = defaultTz
     currentTimezone = defaultTz
