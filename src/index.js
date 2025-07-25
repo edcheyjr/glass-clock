@@ -58,7 +58,6 @@ document.body.innerHTML = `
     Inspired by <a href="https://codepen.io/Petr-Knoll/pen/QwWLZdx" target="_blank">Petr Knoll</a>
     </div>
     <div class="tweakpane-container" id="tweakpane-container"></div>
-h
 `
 // Js logic
 let secondsAngle = 0
